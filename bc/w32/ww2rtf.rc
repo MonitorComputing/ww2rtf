@@ -1,0 +1,136 @@
+//**********************************************************************
+//                                                                     *
+//    Filename:	     ww2rtf.rc                                         *
+//    Date:          16 Feb 2002                                       *
+//    File Version:  1                                                 *
+//                                                                     *
+//    Author:        Chris White (whitecf@bcs.org.uk)                  *
+//    Company:       Monitor Computing Services Ltd.                   *
+//                                                                     *
+//**********************************************************************
+//                                                                     *
+//    Copyright (C) 2002  Monitor Computing Services Ltd.              *
+//                                                                     *
+//    This program is free software; you can redistribute it and/or    *
+//    modify it under the terms of the GNU General Public License      *
+//    as published by the Free Software Foundation; either version 2   *
+//    of the License, or any later version.                            *
+//                                                                     *
+//    This program is distributed in the hope that it will be useful,  *
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of   *
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the    *
+//    GNU General Public License for more details.                     *
+//                                                                     *
+//    You should have received a copy of the GNU General Public        *
+//    License (http://www.gnu.org/copyleft/gpl.html) along with this   *
+//    program; if not, write to:                                       *
+//       The Free Software Foundation Inc.,                            *
+//       59 Temple Place - Suite 330,                                  *
+//       Boston, MA  02111-1307,                                       *
+//       USA.                                                          *
+//                                                                     *
+//**********************************************************************
+//                                                                     *
+//    Notes:                                                           *
+//                                                                     *
+//**********************************************************************
+
+#ifndef WORKSHOP_INVOKED
+  #include <windows.h>
+#endif
+
+#define ID_TEXT	4092
+#define CM_FILEDIRECTORY	102
+#define CM_FILEEXIT	101
+#include <owl\inputdia.rc>
+#include <owl\except.rc>
+
+#define CM_FILEOPEN   202
+#define CM_ABOUT      205
+
+#define IDD_ABOUT     211
+
+#ifdef RC_INVOKED
+
+COMMANDS MENU 
+{
+ POPUP "&File"
+ {
+  MENUITEM "&Convert", CM_FILEOPEN
+  MENUITEM "&Directory", CM_FILEDIRECTORY
+  MENUITEM "e&Xit", CM_FILEEXIT
+ }
+
+ POPUP "&Help"
+ {
+  MENUITEM "&About", CM_ABOUT
+ }
+
+}
+
+IDD_ABOUT DIALOG 37, 64, 170, 56
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "About Drawing Pad"
+FONT 8, "MS Sans Serif"
+{
+ DEFPUSHBUTTON "Ok", IDOK, 60, 34, 50, 14
+ CTEXT "BBC Wordwise to RTF converter", -1, 10, 7, 150, 10
+ CTEXT "Copyright 1999 by Monitor Computing Services Ltd.", -1, 10, 18, 150, 8
+}
+
+IDI_TUTORIAL ICON 
+{
+ '00 00 01 00 01 00 20 20 10 00 00 00 00 00 E8 02'
+ '00 00 16 00 00 00 28 00 00 00 20 00 00 00 40 00'
+ '00 00 01 00 04 00 00 00 00 00 80 02 00 00 00 00'
+ '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 80 00 00 80 00 00 00 80 80 00 80 00'
+ '00 00 80 00 80 00 80 80 00 00 80 80 80 00 C0 C0'
+ 'C0 00 00 00 FF 00 00 FF 00 00 00 FF FF 00 FF 00'
+ '00 00 FF 00 FF 00 FF FF 00 00 FF FF FF 00 00 00'
+ '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 70 07 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 77 77 77 77 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 00 77 77 00 00 00 00 00 00 00 00'
+ '00 00 00 00 77 77 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 77 77 77 77 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 00 77 77 00 00 00 00 00 00 00 00'
+ '00 00 00 00 77 77 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 77 77 77 77 00 00 00 00 00 00 00 00'
+ '00 00 00 00 0F 0F F0 F0 00 00 00 00 00 00 00 00'
+ '00 00 00 00 0F 0F F0 F0 00 00 00 00 00 00 00 00'
+ '00 00 00 00 0F 0F F0 F0 00 00 00 00 00 00 00 00'
+ '00 00 00 00 FF 0F F0 FF 00 00 00 00 00 00 00 00'
+ '00 00 00 0F FF 0F F0 FF F0 00 00 00 00 00 00 00'
+ '00 00 00 FF FF 0F F0 FF FF 00 00 00 00 00 00 00'
+ '00 00 0F FF FF 0F F0 FF FF F0 00 00 00 00 00 00'
+ '00 00 0F FF FF 0F F0 FF FF F0 00 00 00 00 00 00'
+ '00 00 FF FF FF 9B 9B FF FF FF 00 00 00 00 00 00'
+ '00 00 FF FF FF B9 B9 FF FF FF 00 00 00 00 00 00'
+ '00 00 FF FF FF FF FF FF FF FF 00 00 00 00 00 00'
+ '00 00 FF FF FF FF FF FF FF FF 00 00 00 00 00 00'
+ '00 00 FF FF FF FF FF FF FF FF 00 00 00 00 00 00'
+ '00 00 0F FF FF FF FF FF FF F0 00 00 00 00 00 00'
+ '00 00 0F FF FF FF FF FF FF F0 00 00 00 00 00 00'
+ '00 00 00 FF FF FF FF FF FF 00 00 00 00 00 00 00'
+ '00 00 00 0F FF FF FF FF F0 00 00 00 00 00 00 00'
+ '00 00 00 00 0F FF FF F0 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00'
+ '00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF'
+ 'FF FF FF FE 7F FF FF FC 3F FF FF F0 0F FF FF F0'
+ '0F FF FF F0 0F FF FF F0 0F FF FF F0 0F FF FF F0'
+ '0F FF FF F0 0F FF FF F0 0F FF FF F0 0F FF FF F0'
+ '0F FF FF E0 07 FF FF C0 03 FF FF 80 01 FF FF 00'
+ '00 FF FF 00 00 FF FE 00 00 7F FE 00 00 7F FE 00'
+ '00 7F FE 00 00 7F FE 00 00 7F FF 00 00 FF FF 00'
+ '00 FF FF 80 01 FF FF C0 03 FF FF E0 07 FF FF F8'
+ '1F FF FF FF FF FF FF FF FF FF FF FF FF FF'
+}
+
+
+
+#endif  // RC_INVOKED
+
