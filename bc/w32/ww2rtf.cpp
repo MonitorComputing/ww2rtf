@@ -1,6 +1,6 @@
 //**********************************************************************
 //                                                                     *
-//    Filename:	     ww2rtf.cpp                                        *
+//    Filename:      ww2rtf.cpp                                        *
 //    Date:          16 Feb 2002                                       *
 //    File Version:  1                                                 *
 //                                                                     *
@@ -35,6 +35,10 @@
 //                                                                     *
 //**********************************************************************
 
+#include <dir.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include <classlib\arrays.h>
 #include <owl\applicat.h>
 #include <owl\edit.h>
@@ -43,7 +47,7 @@
 #include <owl\opensave.h>
 #include <owl\owlpch.h>
 #include <owl\scroller.h>
-#include <string.h>
+
 #include "ww2rtf.rc"
 #include "monrtfwr.h"
 #include "monwwrd.h"
@@ -51,24 +55,25 @@
 class TMyWindow : public TWindow
 {
   public:
-	 TMyWindow(TWindow *parent = 0);
-	 virtual  ~TMyWindow();
+     TMyWindow(TWindow *parent = 0);
+     virtual  ~TMyWindow();
 
   protected:
-	 void  CmFileOpen();
-	 void  CmFileDirectory();
-	 void  CmFileExit();
-	 void  CmAbout();
-	 DECLARE_RESPONSE_TABLE(TMyWindow);
+     void  CmFileOpen();
+     void  CmFileDirectory();
+     void  CmFileExit();
+     void  CmAbout();
+     DECLARE_RESPONSE_TABLE(TMyWindow);
 
-	 void  OpenFile();
-	 void  OpenDirectory();
+     void  ConvertFile(const char*    fileName, ifstream&    fileStream);
+     void  OpenFile();
+     void  OpenDirectory();
 
-	 static void  traceConversionCb(void  *traceObj, const char  *traceText);
-	 void         traceConversion(const char  *traceText);
+     static void  traceConversionCb(void  *traceObj, const char  *traceText);
+     void         traceConversion(const char  *traceText);
 
-	 TEdit                   *textArea;
-	 TOpenSaveDialog::TData  *fileData;
+     TEdit                   *textArea;
+     TOpenSaveDialog::TData  *fileData;
 };
 
 DEFINE_RESPONSE_TABLE1(TMyWindow,TWindow)
@@ -81,13 +86,15 @@ END_RESPONSE_TABLE;
 
 TMyWindow::TMyWindow(TWindow *parent)
 {
-  Init(parent, 0, 0);
-  fileData = new TFileOpenDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST,
-													 "Wordwise Files (*.BBC)|*.bbc|", 0, "",
-													 "BBC");
-  textArea = new TEdit(this, 0, "", 0, 0, Attr.W, Attr.H, 0, TRUE);
-  textArea->SetReadOnly(TRUE);
-  textArea->FormatLines(TRUE);
+    Init(parent, 0, 0);
+    fileData = new TFileOpenDialog::TData(OFN_HIDEREADONLY|OFN_FILEMUSTEXIST,
+                                          "Wordwise Files (*.BBC)|*.bbc|",
+                                          0,
+                                          "",
+                                          "BBC");
+    textArea = new TEdit(this, 0, "", 0, 0, Attr.W, Attr.H, 0, TRUE);
+    textArea->SetReadOnly(TRUE);
+    textArea->FormatLines(TRUE);
 }
 
 
@@ -103,7 +110,7 @@ TMyWindow::CmFileOpen()
 {
   if (TFileOpenDialog(this, *fileData).Execute() == IDOK)
   {
-	 OpenFile();
+     OpenFile();
   }
 }
 
@@ -111,10 +118,10 @@ TMyWindow::CmFileOpen()
 void
 TMyWindow::CmFileDirectory()
 {
-//  if (TFileOpenDialog(this, *fileData).Execute() == IDOK)
-//  {
-	 OpenDirectory();
-//  }
+    if (TFileOpenDialog(this, *fileData).Execute() == IDOK)
+    {
+        OpenDirectory();
+    }
 }
 
 
@@ -129,55 +136,91 @@ EvClose();
 void
 TMyWindow::CmAbout()
 {
-	TDialog(this, IDD_ABOUT).Execute();
+    TDialog(this, IDD_ABOUT).Execute();
 }
+
+
+void
+TMyWindow::ConvertFile(const char*    fileName, ifstream&    fileStream)
+{
+    MonRtfWriter       writer(fileName);
+    MonWordWiseReader  reader(&fileStream, &writer, this, traceConversionCb);
+
+    textArea->SetWindowPos(0, 0, 0, Attr.W, Attr.H, SWP_NOZORDER);
+    textArea->Clear();
+    reader.convert();
+}
+
 
 
 void
 TMyWindow::OpenFile()
 {
-  ifstream  is(fileData->FileName, ios::in | ios::binary);
+    ifstream  is(fileData->FileName, ios::in | ios::binary);
 
-  if (!is)
-  {
-	 MessageBox("Unable to open file",
-					"File Error",
-					MB_OK | MB_ICONEXCLAMATION);
-  }
-  else
-  {
-//	 if (IDOK == MessageBox(fileData->FileName,
-//  									"Convert file",
-//									MB_OKCANCEL | MB_ICONQUESTION))
-//	 {
-		MonRtfWriter       writer(fileData->FileName);
-		MonWordWiseReader  reader(&is, &writer, this, traceConversionCb);
-
-		textArea->SetWindowPos(0, 0, 0, Attr.W, Attr.H, SWP_NOZORDER);
-		textArea->Clear();
-		reader.convert();
-		MessageBox(fileData->FileName,
-					  "Converted file",
-					  MB_OK);
-//	 }
-    is.close();
-  }
+    if (!is)
+    {
+        MessageBox("Unable to open file",
+                   "File Error",
+                   MB_OK | MB_ICONEXCLAMATION);
+    }
+    else
+    {
+        ConvertFile(fileData->FileName, is);
+        MessageBox(fileData->FileName,
+                   "Converted file",
+                   MB_OK);
+        is.close();
+    }
 }
 
 
 void
 TMyWindow::OpenDirectory()
 {
-//	 if (IDOK == MessageBox(fileData->FileName,
-	 if (IDOK == MessageBox("Whoops!",
-									"Function not yet implemented",
-									MB_OK))
-	 {
-//		MessageBox("Converted files in directory",
-//					  fileData->FileName,
-//					  MB_OK | MB_ICONEXCLAMATION);
-	 }
+    const char    dirSepChar = '\\';
+
+
+    if (0 != strchr(fileData->FileName, dirSepChar))
+    {
+        char*    fileName = strchr(fileData->FileName, '\0');
+
+
+        while (*fileName != dirSepChar)
+        {
+            *fileName = '\0';
+            --fileName;
+        }
+
+        ++fileName;
+        strcpy(fileName, "*.bbc");
+
+
+        ffblk    findBlock;
+
+
+        if (0 == findfirst(fileData->FileName, &findBlock, 0))
+        {
+            do
+            {
+                ifstream    is(findBlock.ff_name, ios::in | ios::binary);
+
+                if (is)
+                {
+                    ConvertFile(findBlock.ff_name, is);
+                }
+
+                is.close();
+
+            } while (0 == findnext(&findBlock));
+
+            MessageBox(fileData->FileName,
+                       "Converted files",
+                       MB_OK);
+        }
+    }
 }
+
 
 
 void
@@ -185,7 +228,7 @@ TMyWindow::traceConversionCb(void  *traceObj, const char  *traceText)
 {
   if (0 != traceObj)
   {
-	 ((TMyWindow*)traceObj)->traceConversion(traceText);
+     ((TMyWindow*)traceObj)->traceConversion(traceText);
   }
 }
 
@@ -199,15 +242,15 @@ TMyWindow::traceConversion(const char  *traceText)
 
 class TMyApp : public TApplication {
   public:
-	 TMyApp() : TApplication() {}
+     TMyApp() : TApplication() {}
 
-	 void InitMainWindow()
-	 {
-		SetMainWindow(new TFrameWindow(0,
-												 "Wordwise to RTF filter",
-												 new TMyWindow));
-		GetMainWindow()->AssignMenu("COMMANDS");
-	 }
+     void InitMainWindow()
+     {
+        SetMainWindow(new TFrameWindow(0,
+                                                 "Wordwise to RTF filter",
+                                                 new TMyWindow));
+        GetMainWindow()->AssignMenu("COMMANDS");
+     }
 };
 
 

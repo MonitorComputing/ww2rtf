@@ -56,6 +56,8 @@ public:
 private:
 
   char   poundSign;
+  char   hashChar;
+  char   printerTab;
   char   padChar;
   float  linesPerInch;
   float  charactersPerInch;
